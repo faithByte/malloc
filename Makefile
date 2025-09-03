@@ -14,8 +14,10 @@ CC		= gcc #-g -fsanitize=address
 CFLAGS	= -I$(INCLUDE_DIR) #-Wall -Wextra -Werror
 
 
+# grep -i '^Size' /proc/29891/smaps | awk '{sum += $2} END {print sum " kB, ~" sum/4 " pages"}'
+
 r:
-	gcc -g -fsanitize=address *.c -o test
+	gcc -g -fsanitize=address src/*.c src/utils/*.c main.c -I./include -o test
 	./test
 
 val: fclean $(NAME) 

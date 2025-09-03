@@ -1,47 +1,30 @@
-#include "list.h"
-
-_node	*newNode(char *str){
-	if (!str)
-		return NULL;
-
-	size_t size = strlen(str);
-	_node *node = malloc(sizeof(_node));
-
-	node->data = malloc(size + 1);
-	memcpy(node->data, str, size);
-	node->data[size] = 0;
-
-	return node;
-}
-
-_ptr	**getCollectors(short type);
+#include "chunks.h"
 
 int	main() {
-	char *str[5] = {"hello\n", "world\n", "test\n", "hhhh\n", "imane\n"};
-	_node	**nodes;
-	short	offset = 0;
+	// char *str;
 
-	nodes = malloc(sizeof(_node *) * 5);
+	// printf("%ld\n", PAGE_SIZE);
+	// printf("%ld\n", TINY_PAGE_SIZE - CHUNK_META_BLOCK_SIZE - PAGE_META_BLOCK_SIZE);
+	// // printPages();
+	// str = (char *)newPage(1, TINY);
 
-	printList(getCollectors(offset), offset);
-	for (int i = 0; i < 5; i++) {
-		nodes[i] = newNode(str[i]);
-		insertNode(getCollectors(offset), nodes[i]->pointers + offset);
-	}
-	printList(getCollectors(offset), offset);
-	for (int i = 0; i < 3; i++)
-		deleteNode(getCollectors(offset), nodes[i]->pointers + offset);
-	printf("====\n");
-	printList(getCollectors(offset), offset);
-	printf("====\n");
+	// memset(str, '-', TINY_PAGE_SIZE + 2);
 
-	printList(getCollectors(1), offset);
-	printf("====\n");
-
-	for (int i = 0; i < 5; i++) {
-		free(nodes[i]->data);
-		free(nodes[i]);
-	}
-	free(nodes);
+	// write(1, str, TINY_PAGE_SIZE + 2);
+	// // printPages();
+	newPage(SMALL_ALLOC_SIZE, SMALL);
+	// // printPages();
+	// newPage(SMALL_PAGE_SIZE + 55, LARGE);
+	// // printPages();
+	newPage(2, TINY);
+	// printPages();
+	// while (1)
+	// {
+	// 	;
+	// }
+	printList(getFreeChunksCollector(TINY), FREE_CHUNKS_OFFSET);
+	printList(getFreeChunksCollector(SMALL), FREE_CHUNKS_OFFSET);
+	printList(getFreeChunksCollector(LARGE), FREE_CHUNKS_OFFSET);
+	
 	return 0;
 }
