@@ -8,46 +8,34 @@ BUILD_DIR := build
 INCLUDE_DIR := include
 
 SRC := $(wildcard $(SRC_DIR)/*.c)
+SRC += $(wildcard $(SRC_DIR)/utils/*.c)
 OBJ := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRC))
 
 CC		= gcc #-g -fsanitize=address
 CFLAGS	= -I$(INCLUDE_DIR) #-Wall -Wextra -Werror
 
+LDFLAGS := -L./ -lft_malloc
 
-# grep -i '^Size' /proc/29891/smaps | awk '{sum += $2} END {print sum " kB, ~" sum/4 " pages"}'
 
-r:
-	gcc -g -fsanitize=address src/*.c src/utils/*.c main.c -I./include -o test
-	./test
+val: fclean all
+	./run.sh \
+	valgrind --tool=memcheck --track-origins=yes --leak-check=full -s ./run.sh ./malloc 
 
-val: fclean $(NAME) 
-# 	@rm out 2> /dev/null
-	$(CC) -o malloc main.c -I./include -L. -lft_malloc 
-	export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH LD_PRELOAD=./libft_malloc.so && \
-	valgrind --tool=memcheck --track-origins=yes --leak-check=full -s ./malloc 
+run: 
+	./run.sh ./malloc 
 
-run:
-	@$(CC) -o malloc main.c -I./include -L. -lft_malloc 
-	@export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH LD_PRELOAD=./libft_malloc.so && ./malloc
-
-all: $(NAME) run
+all: $(NAME)
+	$(CC) -o malloc main.c -I./include $(LDFLAGS) -lpthread -lm
 
 $(NAME) : $(OBJ)
 	@$(CC) -shared -o $@ $(OBJ)
 	@rm -f $(LIB_NAME)
 	@ln -s $(NAME) $(LIB_NAME)
 
-# 	@$(CC) $(CFLAGS) $^ -o malloc
-# 	@$(CC) -shared $(OBJ) -o $(NAME)
-# 	@ln -fs $(NAME) $(NA)
-	
-# 	@$(CC) $(CFLAGS) $^ -o $@
-
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(BUILD_DIR)
-# 	@$(CC) $(CFLAGS) -o $@ -c $<
-# 	$(CC) -c -o $@ $(FLAGS_CC) $^ -O0 -g -I $(PATH_INC)
-	@$(CC) $(CFLAGS) -fPIC -o $@ -c $<
+	@mkdir -p $(BUILD_DIR)/utils
+	@$(CC) $(CFLAGS) -fPIC -MMD -MT $@ -c $< -o $@
 
 clean:
 	@rm -rf *.o
@@ -59,6 +47,6 @@ fclean: clean
 	@rm -rf ./build
 	@rm -rf malloc
 
-re: fclean
+re: fclean all run
 
 .PHONY: all clean fclean re

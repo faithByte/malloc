@@ -3,9 +3,12 @@
 
 # include <stdio.h>
 # include <unistd.h>
-# include <stdlib.h>
+// # include <stdlib.h>
 # include <stdbool.h>
 # include <string.h>
+
+# define DEC_BASE	10
+# define HEXA_BASE	16
 
 typedef struct ptr
 {
@@ -18,5 +21,7 @@ void	insertNode(_ptr **list, _ptr *node);
 void	deleteNode(_ptr **list, _ptr *node);
 
 void	print(char *str);
+void	printNumber(size_t n, short base);
+
 
 #endif

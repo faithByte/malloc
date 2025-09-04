@@ -14,7 +14,7 @@ void	*newVMPage(size_t pageSize) {
 	return vmPage;
 }
 
-e_type	getPageType(size_t size, e_type type) {
+e_type	getPageType(size_t size) {
 	if (size <= TINY_ALLOC_SIZE) 
 		return TINY;
 	else if (size <= SMALL_ALLOC_SIZE)
@@ -27,13 +27,13 @@ size_t	getPageSize(size_t size, e_type type) {
 		return TINY_PAGE_SIZE;
 	else if (type == SMALL)
 		return SMALL_PAGE_SIZE;
+
 	size += PAGE_META_BLOCK_SIZE + CHUNK_META_BLOCK_SIZE;
 	size_t mod = size % PAGE_SIZE;
-
 	return (size - mod + (mod ? PAGE_SIZE : 0));
 }
 
-void	*newPage(size_t size, e_type type) {
+_metaData	*newPage(size_t size, e_type type) {
 	_page	*page;
 	void	*vmPage;
 	size_t	pageSize;
@@ -50,14 +50,18 @@ void	*newPage(size_t size, e_type type) {
 	page->chunks = NULL;
 	page->size = pageSize;
 	page->type = type;
-	
 	// insert in pages list 
 	insertNode(&g_head, &page->ptr);
 
-	return initChunk((void *)((char *)vmPage + PAGE_META_BLOCK_SIZE), pageSize - PAGE_META_BLOCK_SIZE, type);
+	// init big free chunk
+	initChunk((void *)((char *)vmPage + PAGE_META_BLOCK_SIZE), pageSize - PAGE_META_BLOCK_SIZE, type);
+	return ((_metaData *)((char *)vmPage + PAGE_META_BLOCK_SIZE));
 }
 
-void	deletePage() {
-	// deleteNode(&g_head, &page->ptr);
-	// munmap(vmPage, pageSize);
+void	deletePage(void *ptr) {
+	// _page	*page;
+
+	// page = (_page *)(char *)ptr - CHUNK_META_BLOCK_SIZE - PAGE_META_BLOCK_SIZE;
+	// deleteNode(&g_head, (void *)page);
+	// munmap((void *)page, page->size);
 }
