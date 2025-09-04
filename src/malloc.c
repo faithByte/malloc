@@ -1,6 +1,7 @@
 #include "malloc.h"
 
 void	*malloc(size_t size) {
+	// print("-");
 	// if (!size)
 	// 	return NULL;
 
@@ -8,7 +9,6 @@ void	*malloc(size_t size) {
 }
 
 void	free(void *ptr) {
-
 	if (!ptr || !isAllocated((_ptr *)(ptr)))
 		return;
 
@@ -28,16 +28,12 @@ void	*calloc(size_t nmemb, size_t size) {
 void	*realloc(void *ptr, size_t size) {
 	_metaData *meta;
 
-	if (!size)
-		return NULL;
-	
-	
 	if (!ptr)
 		return (malloc(size));
 
 	meta = (_metaData *)((char *)ptr - CHUNK_META_BLOCK_SIZE);
 
-	if (!isAllocated((_ptr *)(ptr)))
+	if (!size || !isAllocated((_ptr *)(ptr)))
 		return NULL;
 
 	// to do: protect

@@ -16,17 +16,16 @@ typedef struct metaData {
 
 # define CHUNK_META_BLOCK_SIZE	sizeof(_metaData)
 
-void	initChunk(void *block, size_t size, e_type type);
 _ptr	**getFreeChunksCollector(e_type type);
 _ptr	**getGarbageCollector(void);
+
+void	initChunk(void *block, size_t size, e_type type);
 bool	isAllocated(void *toFind);
 void	*allocChunk(size_t size);
-_metaData	*newPage(size_t size, e_type type);
 void	freeChunk(void *ptr);
 
 void	splitChunk(_ptr *chunk, size_t size, e_type type);
 void	mergeChunks(_ptr *chunk1, _ptr *chunk2, e_type type);
-
 
 _metaData	*getFirstEmptyBlock(size_t size, e_type type);
 _metaData	*getNextEmptyBlock(size_t size, e_type type);

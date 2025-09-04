@@ -13,6 +13,7 @@
 # define SMALL_PAGE_SIZE	PAGE_SIZE * 2
 
 extern _ptr	*g_head;
+typedef struct metaData _metaData;
 
 typedef enum type {
 	TINY,
@@ -29,9 +30,13 @@ typedef struct page {
 
 # define PAGE_META_BLOCK_SIZE	sizeof(_page)
 
-void	*newVMPage(size_t size);
+
+void		*newVMPage(size_t size);
+void		deletePage(_metaData *meta, e_type type);
+void		cleanPages(_metaData *meta, e_type type);
+_metaData	*newPage(size_t size, e_type type);
+
 void	printPages();
 e_type	getPageType(size_t size);
-void	deletePage(void *ptr);
 
 #endif

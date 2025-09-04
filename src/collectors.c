@@ -1,4 +1,13 @@
-#include "page.h"
+#include "malloc.h"
+
+_ptr	**getChunksCollector(_ptr *chunk) {
+	_page	*page;
+	while (chunk->previous)
+		chunk = chunk->previous;
+	
+	page = (_page *)(((char *)(chunk - CHUNKS_OFFSET)) - PAGE_META_BLOCK_SIZE);
+	return (&(page->chunks));
+}
 
 _ptr	**getGarbageCollector(void) {
 	static _ptr	*garbageCollector;

@@ -1,0 +1,5 @@
+test
+out
+build/
+*.so
+malloc

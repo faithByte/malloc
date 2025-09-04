@@ -1,5 +1,7 @@
 {
 	"files.associations": {
-		"utils.h": "c"
+		"utils.h": "c",
+		"compare": "c",
+		"type_traits": "c"
 	}
 }
